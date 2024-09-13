@@ -1808,8 +1808,17 @@ static int determine_ethernet_addr(struct r8152 *tp, struct sockaddr *sa)
 	} else if (!is_valid_ether_addr(sa->sa_data)) {
 		netif_err(tp, probe, dev, "Invalid ether addr %pM\n",
 			  sa->sa_data);
-		eth_hw_addr_random(dev);
-		ether_addr_copy(sa->sa_data, dev->dev_addr);
+		void __iomem *trng_addr = ioremap(0x91213300, 0x100);
+		unsigned int trng_data = readl(trng_addr);
+		iounmap(trng_addr);
+		char mac_addr_hex[6] = {
+			0x00, 0xe0, 0x4c,
+			trng_data & 0xff,
+			(trng_data>>8) & 0xff,
+			(trng_data>>16) & 0xff
+		};
+		// eth_hw_addr_random(dev);
+		ether_addr_copy(sa->sa_data, mac_addr_hex);
 		netif_info(tp, probe, dev, "Random ether addr %pM\n",
 			   sa->sa_data);
 		return 0;

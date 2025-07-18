@@ -105,6 +105,6 @@
 
 &lcd
 {
-	dsi_reset-gpios = <&gpio0_ports 24 GPIO_ACTIVE_HIGH>;
-	backlight_gpio-gpios = <&gpio0_ports 25 GPIO_ACTIVE_HIGH>;
+	// dsi_reset-gpios = <&gpio0_ports 24 GPIO_ACTIVE_HIGH>;
+	// backlight_gpio-gpios = <&gpio0_ports 25 GPIO_ACTIVE_HIGH>;
 };

@@ -213,7 +213,7 @@ static int canaan_drm_open(struct inode *inode, struct file *filp)
 {
 	int ret;
 
-	pm_runtime_get_sync(disp_dev);
+	// pm_runtime_get_sync(disp_dev);
 	ret = drm_open(inode, filp);
 
 	return ret;
@@ -340,7 +340,7 @@ static int canaan_drm_platform_probe(struct platform_device *pdev)
 	struct component_match *match = NULL;
 
 	disp_dev = dev;
-	pm_runtime_enable(disp_dev);
+	// pm_runtime_enable(disp_dev);
 	match = canaan_drm_match_add(dev);
 	if (IS_ERR(match))
 		return PTR_ERR(match);

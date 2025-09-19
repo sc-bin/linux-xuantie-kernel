@@ -632,7 +632,7 @@ static void canaan_vo_set_timing(struct canaan_vo *vo,
 
 	// set yzone
 	reg = 0;
-	reg = (vbp + 1) + (((vact + (vbp + 1)) - 1) << 16);
+	reg = (vbp ) + (((vact + (vbp)) - 1) << 16);
 	canaan_vo_write(vo, VO_DISP_YZONE_CTL, reg);
 
 	// set total size

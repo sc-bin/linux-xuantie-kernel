@@ -42,6 +42,12 @@
 &uart2 {
 	status = "okay";
 };
+&mmc_sd0 {
+        status = "okay";
+        no-1-8-v;
+        // rx_delay_line = <0x0d>;
+        // tx_delay_line = <0xc0>;
+};
 &mmc_sd1{
 	status = "okay";
 	no-1-8-v;

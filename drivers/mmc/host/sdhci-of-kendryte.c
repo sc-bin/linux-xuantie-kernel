@@ -329,6 +329,7 @@ static int dwcmshc_probe(struct platform_device *pdev)
 				sizeof(struct dwcmshc_priv));
 	if (IS_ERR(host))
 		return PTR_ERR(host);
+	host->tuning_loop_count = 128;
 
 	/*
 	 * extra adma table cnt for cross 128M boundary handling.

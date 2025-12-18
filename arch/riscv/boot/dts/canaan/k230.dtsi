@@ -192,6 +192,13 @@
 		#clock-cells = <0x00>;
 	};
 
+	dummy_emmc:apb-emmcclock {
+		compatible = "fixed-clock";
+		clock-frequency = <200000000>;
+		clock-output-names = "dummy_emmc";
+		#clock-cells = <0x00>;
+	};
+
 	clk_dummy: clock-dummy {
 		compatible = "fixed-clock";
 		clock-frequency = <0>;
@@ -338,7 +345,7 @@
 			reg = <0x0 0x91580000 0x0 0x1000>;
 			interrupts = <142 IRQ_TYPE_LEVEL_HIGH>;
 			interrupt-names = "sdhci0irq";
-			clocks = <&dummy_sd>,<&dummy_sd>;
+			clocks = <&dummy_emmc>,<&dummy_emmc>;
 			clock-names = "core", "bus";
 			max-frequency = <200000000>;
 			bus-width = <8>;

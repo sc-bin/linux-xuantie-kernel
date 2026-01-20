@@ -69,6 +69,8 @@
 		reset-gpios = <&gpio1_ports 4 GPIO_ACTIVE_LOW>;
 		interrupt-parent = <&gpio1_ports>;
 		interrupts = <27 IRQ_TYPE_EDGE_FALLING>;
+		touchscreen-size-x = <480>;
+		touchscreen-size-y = <800>;
 	};
 };
 

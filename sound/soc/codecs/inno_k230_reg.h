@@ -477,9 +477,11 @@ int audio_codec_dac_get_hpoutr_gain(int *gain);
 
 int audio_codec_dac_hpoutl_mute(bool mute);
 int audio_codec_dac_hpoutr_mute(bool mute);
+int audio_codec_dac_digital_mute(bool mute);
 
 int audio_codec_dac_get_hpoutl_mute(bool *mute);
 int audio_codec_dac_get_hpoutr_mute(bool *mute);
+int audio_codec_dac_get_digital_mute(bool *mute);
 
 // int  audio_codec_dacl_set_volume(float volume);
 // int  audio_codec_dacr_set_volume(float volume);

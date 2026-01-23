@@ -691,7 +691,7 @@ void canaan_vo_enable_crtc(struct canaan_vo *vo,
 	canaan_vo_set_timing(vo, adjusted_mode);
 	// set background
 	canaan_vo_write(vo, VO_DISP_BACKGROUND,
-			0xffffff); // enalbe remap  0x77f8437
+			vo->background); // enalbe remap  0x77f8437
 	// enable vo
 	canaan_vo_write(vo, VO_REG_LOAD_CTL, 0x11);
 }

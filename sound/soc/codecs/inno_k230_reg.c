@@ -44,6 +44,7 @@ static bool g_adc_left_mute;
 static bool g_adc_right_mute;
 static bool g_dac_left_mute;
 static bool g_dac_right_mute;
+static bool g_dac_digital_mute;
 
 static int _reset_snd_values(struct acodec_sound_values *snd_values)
 {
@@ -1254,6 +1255,32 @@ int audio_codec_dac_hpoutr_mute(bool mute)
 	return 0;
 }
 
+int audio_codec_dac_digital_mute(bool mute)
+{
+	union reg_6_t reg6;
+
+	if (mute){
+		if (g_dac_digital_mute)
+			return 0;
+		reg6.reg_data = readl(&audio_codec_reg->reg_06);
+		reg6.reg_6.dac_vol = 0x0;
+		writel(reg6.reg_data, &audio_codec_reg->reg_06);
+		msleep(AUDIO_REG_CONFIG_NORMAL_DELAY);
+	}
+	else{
+		if (!g_dac_digital_mute)
+			return 0;
+		reg6.reg_data = readl(&audio_codec_reg->reg_06);
+		reg6.reg_6.dac_vol = g_snd_default_values.dac_volumel;
+		writel(reg6.reg_data, &audio_codec_reg->reg_06);
+		msleep(AUDIO_REG_CONFIG_NORMAL_DELAY);
+	}
+
+	g_dac_digital_mute = mute;
+
+	return 0;
+}
+
 int audio_codec_dac_get_hpoutl_mute(bool *mute)
 {
 	*mute = g_dac_left_mute;
@@ -1263,6 +1290,12 @@ int audio_codec_dac_get_hpoutl_mute(bool *mute)
 int audio_codec_dac_get_hpoutr_mute(bool *mute)
 {
 	*mute = g_dac_left_mute;
+	return 0;
+}
+
+int audio_codec_dac_get_digital_mute(bool *mute)
+{
+	*mute = g_dac_digital_mute;
 	return 0;
 }
 

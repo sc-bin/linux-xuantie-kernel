@@ -96,12 +96,11 @@ static int inno_playback_get_vol(struct snd_kcontrol *kcontrol,
 static int inno_playback_put_vol(struct snd_kcontrol *kcontrol,
 				 struct snd_ctl_elem_value *ucontrol)
 {
-	//printk("=========inno_put_vol:%d\n",ucontrol->value.integer.value[0]);
-
 	audio_codec_dac_set_hpoutl_gain(ucontrol->value.integer.value[0] -
 					INNO_VOLUME_INVERT_VALUE);
 	audio_codec_dac_set_hpoutr_gain(ucontrol->value.integer.value[0] -
 					INNO_VOLUME_INVERT_VALUE);
+
 	return 0;
 }
 
@@ -158,7 +157,7 @@ static int snd_inno_ctl_get(struct snd_kcontrol *kcontrol,
 		ucontrol->value.integer.value[0] =
 			value + INNO_VOLUME_INVERT_VALUE;
 	} else if (kcontrol->private_value == INNO_PCM_PLAYBACK_MUTE) {
-		audio_codec_dac_get_hpoutl_mute(&mute);
+		audio_codec_dac_get_digital_mute(&mute);
 		ucontrol->value.integer.value[0] = !mute;
 	} else if (kcontrol->private_value == INNO_PCM_CAPTURE_VOLUME) {
 		audio_codec_adc_get_micl_gain(&value);
@@ -182,9 +181,17 @@ static int snd_inno_ctl_put(struct snd_kcontrol *kcontrol,
 		audio_codec_dac_set_hpoutr_gain(
 			ucontrol->value.integer.value[0] -
 			INNO_VOLUME_INVERT_VALUE);
+
+		if (ucontrol->value.integer.value[0] == 0)
+		{
+			audio_codec_dac_digital_mute(true);
+		}
+		else
+		{
+			audio_codec_dac_digital_mute(false);
+		}
 	} else if (kcontrol->private_value == INNO_PCM_PLAYBACK_MUTE) {
-		audio_codec_dac_hpoutl_mute(!ucontrol->value.integer.value[0]);
-		audio_codec_dac_hpoutr_mute(!ucontrol->value.integer.value[0]);
+		audio_codec_dac_digital_mute(!ucontrol->value.integer.value[0]);
 	} else if (kcontrol->private_value == INNO_PCM_CAPTURE_VOLUME) {
 		audio_codec_adc_set_micl_gain(ucontrol->value.integer.value[0]);
 		audio_codec_adc_set_micl_gain(ucontrol->value.integer.value[0]);
@@ -228,6 +235,22 @@ static const struct snd_kcontrol_new inno_snd_control[] = {
 		.get = snd_inno_ctl_get,
 		.put = snd_inno_ctl_put,
 		.private_value = INNO_PCM_CAPTURE_MUTE,
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "PCM",
+		.info = snd_inno_ctl_vol,
+		.get = snd_inno_ctl_get,
+		.put = snd_inno_ctl_put,
+		.private_value = INNO_PCM_PLAYBACK_VOLUME,
+	},
+	{
+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+		.name = "PCM Switch",
+		.info = snd_inno_ctl_vol,
+		.get = snd_inno_ctl_get,
+		.put = snd_inno_ctl_put,
+		.private_value = INNO_PCM_PLAYBACK_MUTE,
 	},
 
 };

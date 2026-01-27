@@ -43,9 +43,7 @@ struct k230_pm_domain {
 #define PM_PWR_REPAIR_STAT(pd) ((pd)->reg_offset[REG_PM_REPAIR_STAT])
 
 static void __iomem *sysctl_power_base;
-static u32 hardlock_disp;
-static u32 hardlock_disp_cpu0;
-static u32 hardlock_disp_cpu1;
+
 
 static int k230_power_on(struct generic_pm_domain *domain)
 {
@@ -160,7 +158,7 @@ int k230_pd_probe(struct platform_device *pdev,
 		return PTR_ERR(sysctl_power_base);
 
 	k230_pm_domains[K230_PM_DOMAIN_CPU1]->flags |= GENPD_FLAG_ALWAYS_ON;
-	k230_pm_domains[K230_PM_DOMAIN_AI]->flags |= GENPD_FLAG_ALWAYS_ON;
+	//k230_pm_domains[K230_PM_DOMAIN_AI]->flags |= GENPD_FLAG_ALWAYS_ON;
 	// k230_pm_domains[K230_PM_DOMAIN_VPU]->flags |= GENPD_FLAG_ALWAYS_ON;
 	k230_pm_domains[K230_PM_DOMAIN_DPU]->flags |= GENPD_FLAG_ALWAYS_ON;
 
@@ -168,7 +166,7 @@ int k230_pd_probe(struct platform_device *pdev,
 		k230_pm_domains[i]->power_on = k230_power_on;
 		k230_pm_domains[i]->power_off = k230_power_off;
 
-		if (i == K230_PM_DOMAIN_DISP || i == K230_PM_DOMAIN_VPU)
+		if (i == K230_PM_DOMAIN_DISP || i == K230_PM_DOMAIN_VPU || i == K230_PM_DOMAIN_AI)
 			pm_genpd_init(k230_pm_domains[i], NULL, true);
 		else
 			pm_genpd_init(k230_pm_domains[i], NULL, false);
@@ -176,12 +174,6 @@ int k230_pd_probe(struct platform_device *pdev,
 
 	of_genpd_add_provider_onecell(pdev->dev.of_node, genpd_data);
 
-	of_property_read_u32_index(pdev->dev.of_node, "hardlock", 0,
-				   &hardlock_disp);
-	of_property_read_u32_index(pdev->dev.of_node, "hardlock", 1,
-				   &hardlock_disp_cpu0);
-	of_property_read_u32_index(pdev->dev.of_node, "hardlock", 2,
-				   &hardlock_disp_cpu1);
 
 	dev_info(&pdev->dev, "powerdomain init ok\n");
 

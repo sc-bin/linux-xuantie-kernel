@@ -2565,6 +2565,54 @@
 	 *	3. nonai2d_aclk_gate: nonai2d axi clk gate;
 	 *	4. pdma_aclk_gate: peri dma axi clk gate;
 	 */
+	ai_clk: ai_clk_mux_gate_rate { //ai_CLK_CFG
+		#clock-cells							= <0>;
+		compatible		= "canaan,k230-clk-composite";
+		status								  = "okay";
+		read-only							   = <0>;
+
+		/* parents */
+		clocks				=  <&pll0_div2> , <&pll3_div2>;
+		clk-parent-reg-offset				   = <0x08>;
+		clk-parent-reg-value-shift			  = <0x2>;
+		clk-parent-reg-value-mask			   = <0x1>;
+
+		/* gate */
+		clk-gate-reg-offset					 = <0x8>;
+		clk-gate-reg-bit-enable				 = <0>;
+		clk-gate-reg-bit-reverse				= <0>;
+
+		/* rate */
+		clk-rate-conf-mul-min				   = <1>;
+		clk-rate-conf-mul-max				   = <1>;
+		clk-rate-conf-div-min				   = <1>;
+		clk-rate-conf-div-max				   = <8>;
+		clk-rate-calc-method				   = <1>;
+
+
+		clk-rate-reg-offset					 = <0x8>;
+		clk-rate-reg-mul-value-shift		 = <0>;
+		clk-rate-reg-mul-value-mask			 = <0>;
+
+		clk-rate-reg-div-value-shift			= <3>;
+		clk-rate-reg-div-value-mask			 = <0x7>;
+		clk-rate-reg-write-enable-bit		   = <31>;
+	};
+
+	ai_aclk: ai_aclk_gate {
+		#clock-cells							= <0>;
+		compatible		= "canaan,k230-clk-composite";
+		clocks								  = <&pll0_div4>;
+		status								  = "okay";
+		read-only							   = <0>;
+
+		/* gate */
+		clk-gate-reg-offset					 = <0x8>;
+		clk-gate-reg-bit-enable				 = <10>;
+		clk-gate-reg-bit-reverse			 = <0>;
+	};
+
+
 	shrm_src: shrm_src {
 		#clock-cells							= <0>;
 		compatible		= "canaan,k230-clk-composite";

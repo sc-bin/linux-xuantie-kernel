@@ -35,6 +35,8 @@
 #include <linux/interrupt.h>
 #include <linux/poll.h>
 #include <linux/dma-mapping.h>
+#include <linux/clk.h>
+#include <linux/pm_runtime.h>
 
 #define gnne_writeq(v, addr)                       \
 	{                                         \
@@ -51,6 +53,7 @@ struct gnne_plat {
 	struct class *class;
 	struct device *device;
 	struct cdev cdev;
+	struct clk_bulk_data clks[2];
 };
 
 static struct gnne_plat *plat;
@@ -105,52 +108,14 @@ static unsigned int gnne_poll(struct file *file, poll_table *wait)
 
 static int gnne_open(struct inode *inode, struct file *filp)
 {
-	void __iomem *sysctl_reg;
-
 	gnne_int_flag = 0;
-
-	sysctl_reg = ioremap(0x91103028, 4);
-	if (!sysctl_reg) {
-		pr_err("can't remap gnne sysctl 0x%08X\n", 0x91103028);
-		return -1;
-	}
-	iowrite32(0x00030002, sysctl_reg);
-	iounmap(sysctl_reg);
-
-	sysctl_reg = ioremap(0x91100008, 4);
-	if (!sysctl_reg) {
-		pr_err("can't remap gnne sysctl 0x%08X\n", 0x91100008);
-		return -1;
-	}
-	iowrite32(0x80000405, sysctl_reg);
-	iowrite32(0x80000405, sysctl_reg);
-	iounmap(sysctl_reg);
-
 	return 0;
 }
 
 static int gnne_release(struct inode *inode, struct file *filp)
 {
-	void __iomem *sysctl_reg;
 
 	gnne_int_flag = 0;
-
-	sysctl_reg = ioremap(0x91103028, 4);
-	if (!sysctl_reg) {
-		pr_err("can't remap gnne sysctl 0x%08X\n", 0x91103028);
-		return -1;
-	}
-	iowrite32(0x00030001, sysctl_reg);
-	iounmap(sysctl_reg);
-
-	sysctl_reg = ioremap(0x91100008, 4);
-	if (!sysctl_reg) {
-		pr_err("can't remap gnne sysctl 0x%08X\n", 0x91100008);
-		return -1;
-	}
-	iowrite32(0x00000404, sysctl_reg);
-	iounmap(sysctl_reg);
-
 	return 0;
 }
 
@@ -162,6 +127,47 @@ const struct file_operations gnne_fops = {
 	.fasync = gnne_drv_fasync,
 };
 
+int ai_enable_power_and_clk(struct platform_device *pdev, int num_clks,
+														struct clk_bulk_data *clks)
+{
+	int err = 0;
+
+	pm_runtime_enable(&pdev->dev);
+	err = pm_runtime_resume_and_get(&pdev->dev);
+	if(err < 0)
+		goto err_pm_disable;
+
+	clks[0].id = "ai_clk";
+    clks[1].id = "ai_aclk";
+	err = devm_clk_bulk_get(&pdev->dev, num_clks, clks);
+	if (err < 0)
+		goto err_pm_put;
+
+	err = clk_bulk_prepare_enable(num_clks, clks);
+	if (err < 0)
+		goto err_clk_disable;
+
+	return 0;
+
+
+err_clk_disable:
+	clk_bulk_disable_unprepare(num_clks, clks);
+err_pm_put:
+    pm_runtime_put_sync(&pdev->dev);
+err_pm_disable:
+    pm_runtime_disable(&pdev->dev);
+
+	return err;
+}
+
+int ai_disable_power_and_clk(struct platform_device *pdev, int num_clks,
+														struct clk_bulk_data *clks)
+{
+	clk_bulk_disable_unprepare(num_clks, clks);
+	pm_runtime_put_sync(&pdev->dev);
+	pm_runtime_disable(&pdev->dev);
+	return 0;
+}
 static int gnne_probe(struct platform_device *pdev)
 {
 	struct resource *res;
@@ -241,6 +247,11 @@ static int gnne_probe(struct platform_device *pdev)
 		goto cleanup_cdev;
 	}
 
+	err = ai_enable_power_and_clk(pdev,ARRAY_SIZE(plat->clks),plat->clks);
+
+	if(err)
+		goto cleanup_cdev;
+
 	return 0;
 
 cleanup_cdev:
@@ -266,6 +277,7 @@ static int gnne_remove(struct platform_device *pdev)
 	class_destroy(plat->class);
 	iounmap(plat->regs);
 	free_irq(plat->irq, NULL);
+	ai_disable_power_and_clk(pdev,ARRAY_SIZE(plat->clks),plat->clks);
 	kfree(plat);
 
 	return 0;

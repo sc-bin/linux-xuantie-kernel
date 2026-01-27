@@ -35,6 +35,13 @@
 #include <linux/irq.h>
 #include <linux/interrupt.h>
 #include <linux/poll.h>
+#include <linux/clk.h>
+#include <linux/pm_runtime.h>
+
+extern int ai_disable_power_and_clk(struct platform_device *pdev, int num_clks,
+														struct clk_bulk_data *clks);
+extern int ai_enable_power_and_clk(struct platform_device *pdev, int num_clks,
+														struct clk_bulk_data *clks);
 
 #ifdef MODULE_IMPORT_NS
 MODULE_IMPORT_NS(DMA_BUF);
@@ -67,6 +74,7 @@ struct ai2d_plat {
 	struct device *dev;
 	struct cdev cdev;
 	struct list_head dmabuf;
+	struct clk_bulk_data clks[2];
 };
 
 static struct ai2d_plat *plat;
@@ -326,6 +334,10 @@ static int ai2d_probe(struct platform_device *pdev)
 	}
 	plat->dev = &pdev->dev;
 
+	err = ai_enable_power_and_clk(pdev, ARRAY_SIZE(plat->clks), plat->clks);
+	if (err < 0)
+		goto cleanup_cdev;
+
 	return 0;
 
 cleanup_cdev:
@@ -351,6 +363,7 @@ static int ai2d_remove(struct platform_device *pdev)
 	class_destroy(plat->class);
 	iounmap(plat->regs);
 	free_irq(plat->irq, NULL);
+	ai_disable_power_and_clk(pdev,ARRAY_SIZE(plat->clks),plat->clks);
 	kfree(plat);
 
 	return 0;

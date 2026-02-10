@@ -104,6 +104,7 @@
 			  K230_RESET_M2_TYPE
 			  K230_RESET_M2_DONE_BIT
 			  K230_RESET_M2_ASSERT_BIT>;
+	reset-gpios = <&gpio0_ports 21 GPIO_ACTIVE_HIGH>;
 };
 
 &i2c3 {

@@ -40,6 +40,9 @@
 &uart0 {
 	status = "okay";
 };
+&uart1 {
+	status = "okay";
+};
 &uart3 {
 	status = "okay";
 };

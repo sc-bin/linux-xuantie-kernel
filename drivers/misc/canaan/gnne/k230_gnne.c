@@ -147,6 +147,10 @@ int ai_enable_power_and_clk(struct platform_device *pdev, int num_clks,
 	if (err < 0)
 		goto err_clk_disable;
 
+	err = clk_set_rate(clks[0].clk, 800000000); /* 800M */
+	if (err < 0)
+		goto err_clk_disable;
+	clk_rate_exclusive_get(clks[0].clk);
 	return 0;
 
 
@@ -163,6 +167,7 @@ err_pm_disable:
 int ai_disable_power_and_clk(struct platform_device *pdev, int num_clks,
 														struct clk_bulk_data *clks)
 {
+	clk_rate_exclusive_put(clks[0].clk);
 	clk_bulk_disable_unprepare(num_clks, clks);
 	pm_runtime_put_sync(&pdev->dev);
 	pm_runtime_disable(&pdev->dev);

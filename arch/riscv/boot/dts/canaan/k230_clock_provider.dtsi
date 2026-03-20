@@ -2565,7 +2565,7 @@
 	 *	3. nonai2d_aclk_gate: nonai2d axi clk gate;
 	 *	4. pdma_aclk_gate: peri dma axi clk gate;
 	 */
-	ai_clk: ai_clk_mux_gate_rate { //ai_CLK_CFG
+	ai_clk: ai_clk { //ai_CLK_CFG  ai_clk_mux_gate_rate
 		#clock-cells							= <0>;
 		compatible		= "canaan,k230-clk-composite";
 		status								  = "okay";
@@ -2599,7 +2599,7 @@
 		clk-rate-reg-write-enable-bit		   = <31>;
 	};
 
-	ai_aclk: ai_aclk_gate {
+	ai_aclk: ai_aclk { //ai_aclk_gate
 		#clock-cells							= <0>;
 		compatible		= "canaan,k230-clk-composite";
 		clocks								  = <&pll0_div4>;

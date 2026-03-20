@@ -499,6 +499,8 @@ static int k230_clk_composite_set_parent(struct clk_hw *hw, u8 index)
 				  << k230_composite->mux_shift;
 
 	spin_lock_irqsave(k230_composite->composite_spinlock, flags);
+	composite_mux_value |= readl(k230_composite->gate_reg) &
+		    ~(k230_composite->mux_mask << k230_composite->mux_shift);
 	writel(composite_mux_value, k230_composite->mux_reg);
 	spin_unlock_irqrestore(k230_composite->composite_spinlock, flags);
 
@@ -765,7 +767,7 @@ static struct clk *_of_cannan_k230_clk_composite_setup(struct device_node *node)
 	init.parent_names = parent_name;
 	init.name = node->name;
 	init.ops = p_clk_ops;
-	init.flags = CLK_IS_BASIC /*|flags*/;
+	init.flags = CLK_IS_BASIC | CLK_SET_RATE_NO_REPARENT/*|flags*/;
 	k230_clk_composite->hw.init = &init;
 
 	hw = &k230_clk_composite->hw;

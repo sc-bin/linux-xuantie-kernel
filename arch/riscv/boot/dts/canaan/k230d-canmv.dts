@@ -14,6 +14,7 @@
 		serial2 = &uart2;
 		mmc0 = &mmc_sd1;
 		mmc1 = &mmc_sd0;
+		i2c0 = &i2c4;
 	};
 
 	chosen {
@@ -61,6 +62,9 @@
 	status = "okay";
 };
 
+&i2c4 {
+	status = "okay";
+};
 &i2c3 {
 	status = "okay";
 	touchscreen@38 {
@@ -75,4 +79,20 @@
 &lcd {
 	dsi_reset-gpios = <&gpio0_ports 24 GPIO_ACTIVE_HIGH>;
 	backlight_gpio-gpios = <&gpio0_ports 25 GPIO_ACTIVE_HIGH>;
+};
+&mipi0 {
+	// set to csi2
+	id = <2>;
+	reg = <0x0 0x9000a800 0x0 0x800>;
+	interrupts = <121 IRQ_TYPE_LEVEL_HIGH>;
+	resets = <&sysctl_reset
+			  K230_RESET_CSI2_REG_OFFSET
+			  K230_RESET_CSI2_TYPE
+			  K230_RESET_CSI2_DONE_BIT
+			  K230_RESET_CSI2_ASSERT_BIT>,
+			 <&sysctl_reset
+			  K230_RESET_M2_REG_OFFSET
+			  K230_RESET_M2_TYPE
+			  K230_RESET_M2_DONE_BIT
+			  K230_RESET_M2_ASSERT_BIT>;
 };

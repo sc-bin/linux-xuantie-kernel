@@ -114,3 +114,14 @@
 	// dsi_reset-gpios = <&gpio0_ports 24 GPIO_ACTIVE_HIGH>;
 	// backlight_gpio-gpios = <&gpio0_ports 25 GPIO_ACTIVE_HIGH>;
 };
+&iomux {
+	pwm2_pins: pwm2_pins {
+        pins = K230_IO46;
+        function = K230_IO46_PWM2;  // alt1 = FUNC2 = UART0_TXD/UART0_RXD
+    };
+};
+&pwm0_2{
+	status = "okay";
+	pinctrl-names = "default";
+    pinctrl-0 = <&pwm2_pins>;
+};

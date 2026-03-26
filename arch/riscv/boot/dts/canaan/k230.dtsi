@@ -5,8 +5,10 @@
 
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/soc/canaan,k230_pm_domains.h>
+#include <dt-bindings/pinctrl/canaan,k230-iomux.h>
 #include <dt-bindings/reset/canaan-k230-reset.h>
 #include <dt-bindings/gpio/gpio.h>
+
 
 /dts-v1/;
 / {
@@ -537,13 +539,13 @@
 			clocks = <&adc_clk>;
 		};
 
-		pwm0: pwm0@9140a000 {
+		pwm0_2: pwm0_2@9140a000 {
 			compatible = "canaan,k230-pwm";
 			reg = <0x0 0x9140a000 0x0 0x40>;
 			clocks = <&pwm_pclk_gate>;
 		};
 
-		pwm1: pwm1@9140a040 {
+		pwm3_5: pwm3_5@9140a040 {
 			compatible = "canaan,k230-pwm";
 			reg = <0x0 0x9140a040 0x0 0x40>;
 			clocks = <&pwm_pclk_gate>;
@@ -864,6 +866,22 @@
 				compatible = "canaan,k230-otp";
 				reg = <0x0 0x91213500 0x0 0x300>;
 			};
+		};
+		iomux: iomux@91105000 {
+			compatible = "canaan,k230-iomux";
+			reg = <0x0 0x91105000 0x0 0x100>;
+			#pinctrl-cells = <1>;
+			clocks = <&iomux_pclk_gate>;
+			clock-names = "apb";
+			status = "okay";
+		};
+		pmuiomux: pmuiomux@91000080 {
+			compatible = "canaan,k230-iomux";
+			reg = <0x0 0x91000080 0x0 0x20>;
+			#pinctrl-cells = <1>;
+			clocks = <&iomux_pclk_gate>;
+			clock-names = "apb";
+			status = "okay";
 		};
 	};
 };

@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Canaan Kendryte K230 pinctrl drivers
+#
+
+config PINCTRL_K230_IOMUX
+	bool "K230 IOMUX pinctrl driver"
+	depends on RISCV && ARCH_CANAAN && OF
+	select PINMUX
+	select PINCONF
+	select GENERIC_PINCONF
+	select GPIOLIB
+	help
+	  Say Y here to enable the Canaan Kendryte K230 SoC IOMUX pinctrl driver.
+	  This driver provides control over pin functions, pull-up/pull-down,
+	  drive strength, and other pin configuration parameters for the K230 SoC.

@@ -1,0 +1,37 @@
+/dts-v1/;
+/plugin/;
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/reset/canaan-k230-reset.h>
+
+/ {
+	fragment@0 {
+		target-path = "/aliases";
+		__overlay__ {
+			i2c0 = "/soc/i2c@91406000";
+		};
+	};
+	fragment@1 {
+		target = <&i2c1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+	fragment@2 {
+		target = <&mipi0>;
+		__overlay__ {
+			id = <1>;
+			reg = <0x0 0x9000a000 0x0 0x800>;
+			interrupts = <118 IRQ_TYPE_LEVEL_HIGH>;
+			resets = <&sysctl_reset
+			K230_RESET_CSI1_REG_OFFSET
+			K230_RESET_CSI1_TYPE
+			K230_RESET_CSI1_DONE_BIT
+			K230_RESET_CSI1_ASSERT_BIT>,
+			<&sysctl_reset
+			K230_RESET_M1_REG_OFFSET
+			K230_RESET_M1_TYPE
+			K230_RESET_M1_DONE_BIT
+			K230_RESET_M1_ASSERT_BIT>;
+		};
+	};
+};

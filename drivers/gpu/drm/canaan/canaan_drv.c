@@ -242,8 +242,8 @@ static int canaan_drm_bind(struct device *dev)
 	drm_mode_config_init(drm_dev);
 	drm_dev->mode_config.min_width = 16;
 	drm_dev->mode_config.min_height = 16;
-	drm_dev->mode_config.max_width = 4096;
-	drm_dev->mode_config.max_height = 4096;
+	drm_dev->mode_config.max_width = 1920; //4096
+	drm_dev->mode_config.max_height = 1080;//4096
 	drm_dev->mode_config.normalize_zpos = true;
 	drm_dev->mode_config.funcs = &canaan_drm_mode_config_funcs;
 	drm_dev->mode_config.helper_private = &canaan_drm_mode_config_helpers;
@@ -269,7 +269,8 @@ static int canaan_drm_bind(struct device *dev)
 		goto finish_poll;
 	}
 
-	drm_fbdev_generic_setup(drm_dev, 32);
+	pm_runtime_get_sync(disp_dev);
+	drm_fbdev_generic_setup(drm_dev, 24);
 	DRM_DEV_INFO(dev, "Canaan K230 DRM driver register successfully\n");
 
 	return 0;

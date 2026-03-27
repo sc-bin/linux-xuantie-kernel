@@ -489,10 +489,39 @@ static const struct drm_connector_funcs canaan_dsi_connector_funcs = {
 	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
 };
 
+static int canaan_dsi_encoder_atomic_check(struct drm_encoder *encoder,
+                struct drm_crtc_state *crtc_state,
+                struct drm_connector_state *conn_state)
+{
+    struct canaan_dsi *dsi = encoder_to_canaan_dsi(encoder);
+    int vrefresh = 0;
+
+    vrefresh = drm_mode_vrefresh(&crtc_state->mode);
+    if(vrefresh > 60) {
+        return -1;
+    }
+
+    return 0;
+}
+
+
+static enum drm_mode_status canaan_dsi_mode_valid(struct drm_encoder *crtc,const struct drm_display_mode *mode)
+{
+    struct canaan_dsi *dsi = encoder_to_canaan_dsi(crtc);
+    int vrefresh = 0;
+    vrefresh = drm_mode_vrefresh(mode);
+    if(vrefresh > 60) {
+        return MODE_HSYNC_WIDE;
+    }
+    return MODE_OK;
+}
+
 static const struct drm_encoder_helper_funcs canaan_dsi_enc_helper_funcs = {
 	.mode_fixup = canaan_dsi_encoder_mode_fixup,
 	.disable = canaan_dsi_encoder_disable,
 	.enable = canaan_dsi_encoder_enable,
+	.atomic_check = canaan_dsi_encoder_atomic_check,
+    .mode_valid    = canaan_dsi_mode_valid,
 };
 
 static int canaan_dsi_attach(struct mipi_dsi_host *host,

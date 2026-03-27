@@ -114,3 +114,15 @@
 	num-cs = <2>;
 	spi-max-frequency = <10000000>;
 };
+&iomux {
+	pwm2_pins: pwm2_pins {
+        pins = K230_IO46, K230_IO47;
+        function = K230_IO46_PWM2, K230_IO47_PWM3;
+    };
+
+};
+&pwm0_2{
+	status = "okay";
+	pinctrl-names = "default";
+    pinctrl-0 = <&pwm2_pins >;
+};

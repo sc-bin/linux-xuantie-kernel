@@ -61,6 +61,7 @@
 	mshc_ctrl_r = <0x00>;
 };
 &usb0 {
+	dr_mode = "peripheral";
 	status = "okay";
 };
 &usb1 {

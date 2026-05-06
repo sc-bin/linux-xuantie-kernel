@@ -124,10 +124,19 @@
         pins = K230_IO46, K230_IO47;
         function = K230_IO46_PWM2, K230_IO47_PWM3;
     };
+	pwm3_5_pins: pwm3_5_pins {
+        pins = K230_IO25;
+        function = K230_IO25_PWM5;
+    };
 
 };
 &pwm0_2{
 	status = "okay";
 	pinctrl-names = "default";
     pinctrl-0 = <&pwm2_pins >;
+};
+&pwm3_5{
+	status = "okay";
+	pinctrl-names = "default";
+    pinctrl-0 = <&pwm3_5_pins >;
 };

@@ -557,6 +557,7 @@
 		};
 
 		spi0: spi@91584000 {
+			/*ospi*/
 			compatible = "canaan,k230-spi";
 			reg = <0x0 0x91584000 0x0 0x1000>;
 			#address-cells = <1>;
@@ -578,6 +579,7 @@
 		};
 
 		spi1: spi@91582000 {
+			/*Qspi 0*/
 			compatible = "canaan,k230-spi";
 			reg = <0x0 0x91582000 0x0 0x1000>;
 			#address-cells = <1>;
@@ -598,6 +600,7 @@
 		};
 
 		spi2: spi@91583000 {
+			/*Qspi 1*/
 			compatible = "canaan,k230-spi";
 			reg = <0x0 0x91583000 0x0 0x1000>;
 			#address-cells = <1>;

@@ -7,7 +7,7 @@
 
 / {
 	model = "Canaan CanMV-K230";
-	compatible = "canaan,canmv-k230", "canaan,kendryte-k230";
+	compatible = "canaan,canmv-k230", "canaan,kendryte-k230","k230_canmv_01studio";
 
 	aliases {
 		serial3 = &uart3;
@@ -136,4 +136,44 @@
 	<&sysctl_reset K230_RESET_M2_REG_OFFSET K230_RESET_M2_TYPE
 		 K230_RESET_M2_DONE_BIT K230_RESET_M2_ASSERT_BIT>;
 	reset-gpios = <&gpio1_ports 30 GPIO_ACTIVE_HIGH>;
+};
+&iomux {
+	pwm2_pins: pwm2_pins {
+        pins = K230_IO46; //io46
+        function = K230_IO46_PWM2;  // alt2
+    };
+	ospi_pins: ospi_pins {
+        pins = K230_IO15,K230_IO16,K230_IO17;
+        function = "alt1";
+    };
+	i2c2_pins: i2c2_pins {
+        pins = K230_IO11,K230_IO12;
+        function = "alt3";
+    };
+};
+&pwm0_2{
+	status = "okay";
+	pinctrl-names = "default";
+    pinctrl-0 = <&pwm2_pins>;
+};
+
+&spi0
+{
+	status = "okay";
+	pinctrl-names = "default";
+    pinctrl-0 = <&ospi_pins>;
+
+	spidev0: spidev@0 {
+		compatible = "rohm,dh2228fv";
+		reg = <0>;
+		spi-max-frequency = <4000000>;
+		status = "okay";
+    };
+
+};
+
+&i2c2{
+	status = "okay";
+	pinctrl-names = "default";
+    pinctrl-0 = <&i2c2_pins>;
 };

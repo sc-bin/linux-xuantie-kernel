@@ -8,7 +8,7 @@
 
 / {
 	model = "Canaan CanMV-K230";
-	compatible = "canaan,canmv-k230", "canaan,kendryte-k230";
+	compatible = "canaan,canmv-k230", "canaan,kendryte-k230","k230_canmv_v3";
 
 	aliases {
 		serial3 = &uart3;

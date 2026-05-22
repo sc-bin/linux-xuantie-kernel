@@ -74,6 +74,9 @@ static int k230_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
 	mutex_lock(&priv->lock);
 	priv->user_count++;
 	mutex_unlock(&priv->lock);
+	//memset(&pwm->state, 0, sizeof(pwm->state));
+	pwm->state.enabled = 1;
+	writel(0, priv->regs + PWM_PWMCMP(pwm->hwpwm + 1));
 
 	return 0;
 }
@@ -84,8 +87,13 @@ static void k230_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
 
 	mutex_lock(&priv->lock);
 	priv->user_count--;
-	if (priv->user_count == 0)
+	if (priv->user_count == 0){
 		writel(0, priv->regs + PWM_PWMCFG);
+		writel(0xffffffff, priv->regs + PWM_PWMCMP(0));
+		priv->scale = 0;
+		priv->period = 0;
+	}
+
 	mutex_unlock(&priv->lock);
 }
 
@@ -111,7 +119,7 @@ static void k230_pwm_update_period(struct k230_pwm_chip *priv)
 
 	freq = priv->clk_freq;
 	val = div64_ul(priv->period * freq, NSEC_PER_SEC) - 1;
-	scale = clamp(ilog2(val) - PWM_CMPWIDTH, 0, 0xf);
+	scale = clamp(ilog2(roundup_pow_of_two(val)) - PWM_CMPWIDTH, 0, 0xf);
 	val = val >> scale;
 	if (val == 0)
 		val = 1;
@@ -161,6 +169,7 @@ static int k230_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
 	mutex_lock(&priv->lock);
 	if (period != priv->period) {
 		if (priv->user_count != 1 && priv->period) {
+			printk("can not change period, other channels are using PWM\n");
 			mutex_unlock(&priv->lock);
 			return -EBUSY;
 		}

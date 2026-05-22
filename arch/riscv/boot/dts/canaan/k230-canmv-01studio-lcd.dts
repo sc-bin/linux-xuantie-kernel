@@ -17,6 +17,7 @@
 		i2c1 = &i2c3;
 		mmc0 = &mmc_sd0;
 		mmc1 = &mmc_sd1;
+		spi0 = &spi0;
 	};
 
 	chosen {
@@ -120,13 +121,25 @@
         pins = K230_IO46; //io46
         function = K230_IO46_PWM2;  // alt2
     };
+	pwm3_pins: pwm3_pins {
+		pins = K230_IO47; //io47
+		function = K230_IO47_PWM3;
+	};
 	ospi_pins: ospi_pins {
-        pins = K230_IO15,K230_IO16,K230_IO17;
-        function = "alt1";
+		pin_clk_mo_mi{
+			pins = K230_IO15,K230_IO16,K230_IO17;
+        	function = "alt1";
+		};
+		pin_cs{
+			pins = K230_IO14;
+        	function = "alt1";
+			bias-pull-up;
+		};
     };
 	i2c2_pins: i2c2_pins {
         pins = K230_IO11,K230_IO12;
         function = "alt3";
+		bias-pull-up;
     };
 };
 &pwm0_2{
@@ -134,7 +147,11 @@
 	pinctrl-names = "default";
     pinctrl-0 = <&pwm2_pins>;
 };
-
+&pwm3_5{
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pwm3_pins>;
+};
 &spi0
 {
 	status = "okay";

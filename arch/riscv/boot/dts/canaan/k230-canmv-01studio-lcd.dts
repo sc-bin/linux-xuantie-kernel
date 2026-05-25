@@ -5,6 +5,7 @@
 
 #include "k230.dtsi"
 #include "display-st7701-480x800.dtsi"
+#include <dt-bindings/input/input.h>
 
 /
 {
@@ -35,6 +36,33 @@
 		canaan,model                = "K230_I2S_INNO";
 		canaan,k230-i2s-controller  = <&i2s>;
 		canaan,k230-audio-codec     = <&inno_codec>;
+	};
+
+	// User button (GPIO21)
+	btn {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio21_pins>;
+		status = "disabled";
+
+		btn0: btn0 {
+			label = "btn";
+			linux,code = <KEY_VOLUMEUP>;
+			gpios = <&gpio0_ports 21 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	// User LED (GPIO52)
+	led {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio52_pins>;
+		status = "disabled";
+
+		led0: led0 {
+			label = "led";
+			gpios = <&gpio1_ports 20 GPIO_ACTIVE_HIGH>;
+		};
 	};
 };
 
@@ -124,6 +152,14 @@
 	pwm3_pins: pwm3_pins {
 		pins = K230_IO47; //io47
 		function = K230_IO47_PWM3;
+	};
+	gpio21_pins: gpio21_pins {
+		pins = K230_IO21;
+		function = "alt0";
+	};
+	gpio52_pins: gpio52_pins {
+		pins = K230_IO52;
+		function = "alt0";
 	};
 	ospi_pins: ospi_pins {
 		pin_clk_mo_mi{

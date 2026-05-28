@@ -21,3 +21,12 @@ config SOC_K230_PM_DOMAINS
 	  power domains controller that is used for disabling and
 	  enabling SoC devices including CPU1, KPU, display, VPU
 	  and DPU.
+
+config K230_CHPID
+	bool "Canaan Kendryte K230 chip ID driver"
+	depends on RISCV && OF && ARCH_CANAAN
+	default y
+	help
+	  This enables support for the Canaan Kendryte K230 chip ID
+	  driver. It reads 32 bytes of chip identification data from
+	  a fixed SoC register and exposes it via /sys/class/chipid/.

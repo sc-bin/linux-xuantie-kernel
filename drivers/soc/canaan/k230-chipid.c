@@ -2,7 +2,7 @@
 /*
  * Copyright (C) 2026 sc-bin
  *
- * K230 Chip ID driver - provides chip ID through /sys/class/chipid/chipid
+ * K230 Chip ID driver - provides chip ID through /sys/class/chip_id/chip_id
  *
  * This driver reads 32 bytes of chip identification information
  * from a fixed SoC register address (0x91213300) on the Canaan
@@ -23,7 +23,7 @@
 static void __iomem *chipid_base;
 static struct class *chipid_class;
 
-static ssize_t chipid_show(const struct class *class,
+static ssize_t chip_id_show(const struct class *class,
 			   const struct class_attribute *attr, char *buf)
 {
 	uint8_t chip_id[CHIPID_SIZE];
@@ -37,12 +37,11 @@ static ssize_t chipid_show(const struct class *class,
 
 	for (i = 0; i < CHIPID_SIZE; i++)
 		pos += sprintf(buf + pos, "%02x", chip_id[i]);
-	buf[pos++] = '\n';
 	buf[pos] = '\0';
 
 	return pos;
 }
-static CLASS_ATTR_RO(chipid);
+static CLASS_ATTR_RO(chip_id);
 
 static int __init k230_chipid_init(void)
 {
@@ -54,14 +53,14 @@ static int __init k230_chipid_init(void)
 		return -ENOMEM;
 	}
 
-	chipid_class = class_create("chipid");
+	chipid_class = class_create("chip_id");
 	if (IS_ERR(chipid_class)) {
 		pr_err("k230-chipid: failed to create chipid class\n");
 		ret = PTR_ERR(chipid_class);
 		goto err_iounmap;
 	}
 
-	ret = class_create_file(chipid_class, &class_attr_chipid);
+	ret = class_create_file(chipid_class, &class_attr_chip_id);
 	if (ret) {
 		pr_err("k230-chipid: failed to create class attribute\n");
 		goto err_destroy_class;
@@ -80,7 +79,7 @@ err_iounmap:
 
 static void __exit k230_chipid_exit(void)
 {
-	class_remove_file(chipid_class, &class_attr_chipid);
+	class_remove_file(chipid_class, &class_attr_chip_id);
 	class_destroy(chipid_class);
 	iounmap(chipid_base);
 }

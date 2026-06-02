@@ -110,6 +110,12 @@
 			gpios = <&gpio1_ports 20 GPIO_ACTIVE_HIGH>;
 			default-state = "on";
 		};
+		audio-en {
+			function = LED_FUNCTION_STATUS;
+			color = <LED_COLOR_ID_GREEN>;
+			gpios = <&gpio0_ports 20 GPIO_ACTIVE_HIGH>;
+			default-state = "on";
+		};
 	};
 };
 

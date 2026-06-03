@@ -126,11 +126,27 @@
 	spi-max-frequency = <10000000>;
 };
 &iomux {
-	pwm2_pins: pwm2_pins {
-        pins = K230_IO46, K230_IO47;
-        function = K230_IO46_PWM2, K230_IO47_PWM3;
+	pwm2_pins_init: pwm2_pins_init {
+        pins = K230_IO46;
+        function = "alt0";
     };
-	pwm3_5_pins: pwm3_5_pins {
+	pwm2_pins: pwm2_pins {
+        pins = K230_IO46;
+        function = K230_IO46_PWM2;
+    };
+	pwm3_pins_init: pwm3_pins_init {
+        pins = K230_IO47;
+        function = "alt0";
+    };
+	pwm3_pins: pwm3_pins {
+        pins = K230_IO47;
+        function = K230_IO47_PWM3;
+    };
+	pwm5_pins_init: pwm5_pins_init {
+        pins = K230_IO25;
+        function = "alt0";
+    };
+	pwm5_pins: pwm5_pins {
         pins = K230_IO25;
         function = K230_IO25_PWM5;
     };
@@ -138,11 +154,13 @@
 };
 &pwm0_2{
 	status = "okay";
-	pinctrl-names = "default";
-    pinctrl-0 = <&pwm2_pins >;
+	pinctrl-names = "init","default";
+    pinctrl-0 = <&pwm2_pins_init>;
+    pinctrl-1 = <&pwm2_pins>;
 };
 &pwm3_5{
 	status = "okay";
-	pinctrl-names = "default";
-    pinctrl-0 = <&pwm3_5_pins >;
+	pinctrl-names = "init","default";
+    pinctrl-0 = <&pwm3_pins_init>, <&pwm5_pins_init>;
+    pinctrl-1 = <&pwm3_pins>, <&pwm5_pins>;
 };

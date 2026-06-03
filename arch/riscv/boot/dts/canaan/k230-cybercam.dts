@@ -157,10 +157,12 @@
 	pinctrl-names = "init","default";
     pinctrl-0 = <&pwm2_pins_init>;
     pinctrl-1 = <&pwm2_pins>;
+	#pwm-cells = <3>;
 };
 &pwm3_5{
 	status = "okay";
 	pinctrl-names = "init","default";
     pinctrl-0 = <&pwm3_pins_init>, <&pwm5_pins_init>;
     pinctrl-1 = <&pwm3_pins>, <&pwm5_pins>;
+	#pwm-cells = <3>;
 };

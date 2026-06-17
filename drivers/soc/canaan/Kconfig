@@ -30,3 +30,11 @@ config K230_CHPID
 	  This enables support for the Canaan Kendryte K230 chip ID
 	  driver. It reads 32 bytes of chip identification data from
 	  a fixed SoC register and exposes it via /sys/class/chipid/.
+
+config SOC_K230_GDMA
+	bool "Canaan Kendryte K230 GDMA controller"
+	depends on RISCV && OF && ARCH_CANAAN
+	depends on DRM
+	help
+	  This enables support for the Canaan Kendryte K230 GDMA
+	  rotation engine.

@@ -3,6 +3,7 @@ config DRM_CANAAN
 	bool "DRM Support for Canaan K230 Display Controller"
 	depends on OF
 	depends on COMMON_CLK
+	select SOC_K230_GDMA
 	select DRM
 	select DRM_KMS_HELPER
 	select DRM_KMS_DMA_HELPER

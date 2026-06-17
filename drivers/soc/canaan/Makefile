@@ -2,4 +2,5 @@
 
 obj-$(CONFIG_SOC_K210_SYSCTL)	+= k210-sysctl.o
 obj-$(CONFIG_SOC_K230_PM_DOMAINS)	+= k230-power-domains.o
+obj-$(CONFIG_SOC_K230_GDMA)	+= k230-gdma.o
 obj-$(CONFIG_K230_CHPID)	+= k230-chipid.o

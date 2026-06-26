@@ -2,6 +2,7 @@
 /plugin/;
 #include <dt-bindings/interrupt-controller/irq.h>
 #include <dt-bindings/reset/canaan-k230-reset.h>
+#include <dt-bindings/gpio/gpio.h>
 
 / {
 	fragment@0 {
@@ -20,6 +21,8 @@
 			K230_RESET_CSI2_DONE_BIT K230_RESET_CSI2_ASSERT_BIT>,
 			<&sysctl_reset K230_RESET_M2_REG_OFFSET K230_RESET_M2_TYPE
 			K230_RESET_M2_DONE_BIT K230_RESET_M2_ASSERT_BIT>;
+			reset-gpios = <&gpio1_ports 30 GPIO_ACTIVE_HIGH>;
+
 		};
 	};
 };

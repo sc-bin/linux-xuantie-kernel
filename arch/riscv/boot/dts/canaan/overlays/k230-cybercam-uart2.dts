@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: GPL-2.0 OR MIT
+/dts-v1/;
+/plugin/;
+#include <dt-bindings/pinctrl/canaan,k230-iomux.h>
+
+/ {
+	fragment@0 {
+		target = <&iomux>;
+		__overlay__ {
+			uart2_pins: uart2_pins {
+				pins = K230_IO11, K230_IO12;
+				function = "alt2";
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&uart2>;
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart2_pins>;
+		};
+	};
+};

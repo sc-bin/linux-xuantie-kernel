@@ -1,0 +1,32 @@
+/dts-v1/;
+/plugin/;
+#include <dt-bindings/pinctrl/canaan,k230-iomux.h>
+
+/ {
+	fragment@0 {
+		target = <&iomux>;
+		__overlay__ {
+			spi0_cs1_pins: spi0_cs1_pins {
+				pins = K230_IO15, K230_IO16, K230_IO17, K230_IO61;
+				function = "alt3";
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&spi1>;
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&spi0_cs1_pins>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			spidev0_1: spidev@1 {
+				compatible = "rohm,dh2228fv";
+				status = "okay";
+				reg = <1>;
+				spi-max-frequency = <100000000>;
+			};
+		};
+	};
+};

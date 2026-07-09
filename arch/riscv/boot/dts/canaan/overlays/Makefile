@@ -10,6 +10,7 @@ dtb-y += k230-cybercam-spidev0_1.dtbo
 dtb-y += k230-cybercam-i2c2.dtbo
 dtb-y += k230-cybercam-uart2.dtbo
 dtb-y += k230-cybercam-spidev0_0.dtbo
+dtb-y += k230-cybercam-csi0.dtbo
 
 $(obj)/%.dtbo: $(src)/%.dts FORCE
 	$(call if_changed_dep,dtc)

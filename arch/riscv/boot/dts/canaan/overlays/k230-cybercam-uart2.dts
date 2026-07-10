@@ -22,4 +22,7 @@
 			pinctrl-0 = <&uart2_pins>;
 		};
 	};
+	__set_device_meta__ {
+		conflicts-with = "i2c2";
+	};
 };

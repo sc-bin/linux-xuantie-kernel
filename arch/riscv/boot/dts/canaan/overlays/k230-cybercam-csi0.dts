@@ -31,4 +31,7 @@
 
 		};
 	};
+	__set_device_meta__ {
+		conflicts-with = "csi2";
+	};
 };

@@ -72,22 +72,22 @@ static int _reset_adc_sound(void)
 	union reg_9_t reg9;
 
 	reg24.reg_data = readl(&audio_codec_reg->reg_24);
-	reg24.reg_24.gain_micl = g_snd_default_values.gain_micl;
+	reg24.reg_24.gain_micl = g_snd_current_values.gain_micl;
 	writel(reg24.reg_data, &audio_codec_reg->reg_24);
 	msleep(AUDIO_REG_CONFIG_NORMAL_DELAY);
 
 	reg27.reg_data = readl(&audio_codec_reg->reg_27);
-	reg27.reg_27.gain_micr = g_snd_default_values.gain_micr;
+	reg27.reg_27.gain_micr = g_snd_current_values.gain_micr;
 	writel(reg27.reg_data, &audio_codec_reg->reg_27);
 	msleep(AUDIO_REG_CONFIG_NORMAL_DELAY);
 
 	reg24.reg_data = readl(&audio_codec_reg->reg_24);
-	reg24.reg_24.gain_alcl = g_snd_default_values.gain_alcl;
+	reg24.reg_24.gain_alcl = g_snd_current_values.gain_alcl;
 	writel(reg24.reg_data, &audio_codec_reg->reg_24);
 	msleep(AUDIO_REG_CONFIG_NORMAL_DELAY);
 
 	reg27.reg_data = readl(&audio_codec_reg->reg_27);
-	reg27.reg_27.gain_alcr = g_snd_default_values.gain_alcr;
+	reg27.reg_27.gain_alcr = g_snd_current_values.gain_alcr;
 	writel(reg27.reg_data, &audio_codec_reg->reg_27);
 	msleep(AUDIO_REG_CONFIG_NORMAL_DELAY);
 

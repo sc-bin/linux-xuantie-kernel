@@ -159,3 +159,21 @@
 		};
 	};
 };
+
+&mipi0 {
+	status = "okay";
+};
+
+&mipi1 {
+	status = "disabled";
+};
+
+&mipi2 {
+	status = "disabled";
+};
+
+&v4l2isp {
+	dev0-sensor-name = "gc2093";
+	dev0-sensor-mode = <0>;
+	dev0-sensor-i2c-bus = <0>; /* alias i2c0 = &i2c4 */
+};

@@ -14,8 +14,10 @@
 
 	aliases {
 		serial3 = &uart3;
-		i2c0 = &i2c4;
-		i2c1 = &i2c3;
+		i2c0 = &i2c0;
+		i2c1 = &i2c1;
+		i2c3 = &i2c3;
+		i2c4 = &i2c4;
 		mmc0 = &mmc_sd0;
 		mmc1 = &mmc_sd1;
 		spi0 = &spi0;
@@ -109,19 +111,75 @@
 &vo {
 	vth_line = <10>;
 };
-&mipi0
-{
-	// set to csi2
+&i2c0 {
+	status = "okay";
+};
+
+&i2c1 {
+	status = "okay";
+};
+
+/* CSI2 default single-cam; CSI0/CSI1 prewritten disabled.
+ *   slot0 / mipi.0 = physical CSI2 (ON)
+ *   slot1 / mipi.1 = physical CSI0 (disabled; set status="okay" to enable)
+ *   slot2 / mipi.2 = physical CSI1 (disabled; set status="okay" to enable)
+ * Sensor count = continuous (devN-sensor-name AND mipi.N okay).
+ * Enable corresponding &i2cX when enabling a slot.
+ */
+&mipi0 {
+	/* CSI2 -> logical slot0 */
 	id = <2>;
 	reg = <0x0 0x9000a800 0x0 0x800>;
 	interrupts = <121 IRQ_TYPE_LEVEL_HIGH>;
 	resets = <&sysctl_reset K230_RESET_CSI2_REG_OFFSET K230_RESET_CSI2_TYPE
 			  K230_RESET_CSI2_DONE_BIT K230_RESET_CSI2_ASSERT_BIT>,
-	<&sysctl_reset K230_RESET_M2_REG_OFFSET K230_RESET_M2_TYPE
-		 K230_RESET_M2_DONE_BIT K230_RESET_M2_ASSERT_BIT>;
-	reset-gpios = <&gpio1_ports 30 GPIO_ACTIVE_HIGH>;
+		 <&sysctl_reset K230_RESET_M2_REG_OFFSET K230_RESET_M2_TYPE
+			  K230_RESET_M2_DONE_BIT K230_RESET_M2_ASSERT_BIT>;
+	reset-gpios = <&gpio0_ports 9 GPIO_ACTIVE_HIGH>;
+	status = "okay";
 };
 
+&mipi1 {
+	/* CSI0 -> logical slot1; disabled by default */
+	id = <0>;
+	reg = <0x0 0x90009800 0x0 0x800>;
+	interrupts = <115 IRQ_TYPE_LEVEL_HIGH>;
+	resets = <&sysctl_reset K230_RESET_CSI0_REG_OFFSET K230_RESET_CSI0_TYPE
+			  K230_RESET_CSI0_DONE_BIT K230_RESET_CSI0_ASSERT_BIT>,
+		 <&sysctl_reset K230_RESET_M0_REG_OFFSET K230_RESET_M0_TYPE
+			  K230_RESET_M0_DONE_BIT K230_RESET_M0_ASSERT_BIT>;
+	reset-gpios = <&gpio1_ports 30 GPIO_ACTIVE_HIGH>;
+	status = "disabled";
+};
+
+&mipi2 {
+	/* CSI1 -> logical slot2; disabled by default */
+	id = <1>;
+	reg = <0x0 0x9000a000 0x0 0x800>;
+	interrupts = <118 IRQ_TYPE_LEVEL_HIGH>;
+	resets = <&sysctl_reset K230_RESET_CSI1_REG_OFFSET K230_RESET_CSI1_TYPE
+			  K230_RESET_CSI1_DONE_BIT K230_RESET_CSI1_ASSERT_BIT>,
+		 <&sysctl_reset K230_RESET_M1_REG_OFFSET K230_RESET_M1_TYPE
+			  K230_RESET_M1_DONE_BIT K230_RESET_M1_ASSERT_BIT>;
+	reset-gpios = <&gpio1_ports 12 GPIO_ACTIVE_HIGH>;
+	status = "disabled";
+};
+
+&v4l2isp {
+	/*
+	 * Pre-write three sensors; only enabled mipi.N slots count.
+	 * With mipi1/mipi2 disabled: 1 cam / 3 video nodes.
+	 */
+	dev0-sensor-name = "gc2093";
+	dev0-sensor-mode = <0>;
+	dev0-sensor-i2c-bus = <4>; /* CSI2 */
+	dev1-sensor-name = "gc2093";
+	dev1-sensor-mode = <0>;
+	dev1-sensor-i2c-bus = <0>; /* CSI0 */
+	dev2-sensor-name = "gc2093";
+	dev2-sensor-mode = <0>;
+	dev2-sensor-i2c-bus = <1>; /* CSI1 */
+};
 &i2c3
 {
 	status = "okay";

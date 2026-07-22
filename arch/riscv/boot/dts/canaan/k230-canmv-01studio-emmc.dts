@@ -128,7 +128,7 @@
 };
 &mipi0
 {
-	// set to csi2
+	/* CSI2 remapped to logical slot0 */
 	id = <2>;
 	reg = <0x0 0x9000a800 0x0 0x800>;
 	interrupts = <121 IRQ_TYPE_LEVEL_HIGH>;
@@ -137,4 +137,20 @@
 	<&sysctl_reset K230_RESET_M2_REG_OFFSET K230_RESET_M2_TYPE
 		 K230_RESET_M2_DONE_BIT K230_RESET_M2_ASSERT_BIT>;
 	reset-gpios = <&gpio1_ports 30 GPIO_ACTIVE_HIGH>;
+	status = "okay";
+};
+
+&mipi1 {
+	status = "disabled";
+};
+
+&mipi2 {
+	status = "disabled";
+};
+
+&v4l2isp {
+	/* alias i2c0=&i2c4 on this board -> use bus 0 for CSI2 sensor */
+	dev0-sensor-name = "gc2093";
+	dev0-sensor-mode = <0>;
+	dev0-sensor-i2c-bus = <0>;
 };

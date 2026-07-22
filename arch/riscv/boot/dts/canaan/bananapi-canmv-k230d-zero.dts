@@ -93,4 +93,20 @@
 			  K230_RESET_M2_TYPE
 			  K230_RESET_M2_DONE_BIT
 			  K230_RESET_M2_ASSERT_BIT>;
+	status = "okay";
+};
+
+&mipi1 {
+	status = "disabled";
+};
+
+&mipi2 {
+	status = "disabled";
+};
+
+&v4l2isp {
+	/* BPI defconfig selects imx335; camera control is on hardware I2C4. */
+	dev0-sensor-name = "imx335";
+	dev0-sensor-mode = <0>;
+	dev0-sensor-i2c-bus = <4>;
 };

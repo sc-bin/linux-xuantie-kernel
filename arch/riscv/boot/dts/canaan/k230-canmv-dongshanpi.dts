@@ -120,3 +120,21 @@
 	dsi_reset-gpios = <&gpio0_ports 22 GPIO_ACTIVE_HIGH>;
 	backlight_gpio-gpios = <&gpio0_ports 25 GPIO_ACTIVE_HIGH>;
 };
+
+&mipi0 {
+	status = "okay";
+};
+
+&mipi1 {
+	status = "disabled";
+};
+
+&mipi2 {
+	status = "disabled";
+};
+
+&v4l2isp {
+	dev0-sensor-name = "gc2093";
+	dev0-sensor-mode = <0>;
+	dev0-sensor-i2c-bus = <0>; /* alias i2c0 = &i2c4 */
+};

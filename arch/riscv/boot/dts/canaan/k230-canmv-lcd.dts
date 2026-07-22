@@ -12,6 +12,8 @@
 
 	aliases {
 		serial3 = &uart3;
+		i2c0 = &i2c3; /* camera CSI -> /dev/i2c-0 */
+		i2c1 = &i2c4; /* touchscreen -> /dev/i2c-1 */
 		mmc0 = &mmc_sd0;
 		mmc1 = &mmc_sd1;
 	};
@@ -95,6 +97,25 @@
 	};
 };
 
+&i2c0 {
+	status = "okay";
+};
+
 &mipi0 {
 	reset-gpios = <&gpio0_ports 0 GPIO_ACTIVE_HIGH>;
+	status = "okay";
+};
+
+&mipi1 {
+	status = "disabled";
+};
+
+&mipi2 {
+	status = "disabled";
+};
+
+&v4l2isp {
+	dev0-sensor-name = "ov5647";
+	dev0-sensor-mode = <0>;
+	dev0-sensor-i2c-bus = <0>; /* alias i2c0 = &i2c3 */
 };

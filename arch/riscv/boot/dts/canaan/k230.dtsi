@@ -717,6 +717,13 @@
 			status = "okay";
 		};
 
+		v4l2isp:v4l2-isp {
+			compatible = "verisilicon,isp-v4l2";
+			id = <0>;
+			reg = <0x0 0x90000000 0x0 0x9000>;
+			status = "okay";
+		};
+
 		mipi0: mipi.0 {
 			compatible = "verisilicon,mipi";
 			id = <0>;

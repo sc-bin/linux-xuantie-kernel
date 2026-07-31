@@ -93,7 +93,7 @@
 	vth_line = <10>;
 };
 
-&mipi0 {
+&mipi2 {
 	/* CSI2 -> logical slot0 */
 	id = <2>;
 	reg = <0x0 0x9000a800 0x0 0x800>;
@@ -106,7 +106,7 @@
 	status = "okay";
 };
 
-&mipi1 {
+&mipi0 {
 	/* CSI0 -> logical slot1; disabled by default */
 	id = <0>;
 	reg = <0x0 0x90009800 0x0 0x800>;
@@ -119,7 +119,7 @@
 	status = "okay";
 };
 
-&mipi2 {
+&mipi1 {
 	/* CSI1 -> logical slot2; disabled by default */
 	id = <1>;
 	reg = <0x0 0x9000a000 0x0 0x800>;
@@ -139,13 +139,13 @@
 	 */
 	dev0-sensor-name = "gc2093";
 	dev0-sensor-mode = <0>;
-	dev0-sensor-i2c-bus = <4>; /* CSI2 */
+	dev0-sensor-i2c-bus = <0>; /* CSI0 */
 	dev1-sensor-name = "gc2093";
 	dev1-sensor-mode = <0>;
-	dev1-sensor-i2c-bus = <0>; /* CSI0 */
+	dev1-sensor-i2c-bus = <1>; /* CSI1 */
 	dev2-sensor-name = "gc2093";
 	dev2-sensor-mode = <0>;
-	dev2-sensor-i2c-bus = <1>; /* CSI1 */
+	dev2-sensor-i2c-bus = <4>; /* CSI2 */
 };
 
 

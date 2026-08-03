@@ -9,6 +9,7 @@
 		__overlay__ {
 			i2c2_pins: i2c2_pins {
 				pins = K230_IO11, K230_IO12;
+				bias-pull-up;
 				function = "alt3";
 			};
 		};

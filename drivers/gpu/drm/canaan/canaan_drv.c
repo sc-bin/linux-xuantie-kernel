@@ -31,6 +31,7 @@
 #include <drm/drm_crtc.h>
 #include <drm/drm_crtc_helper.h>
 #include <drm/drm_probe_helper.h>
+#include <linux/dma-buf.h>
 
 #include "canaan_drv.h"
 #include "canaan_vo.h"
@@ -73,6 +74,9 @@ static int canaan_drm_gem_dma_object_mmap(struct drm_gem_object *obj,
 	return canaan_drm_gem_dma_mmap(dma_obj, vma);
 }
 
+static struct dma_buf *canaan_gem_prime_export(struct drm_gem_object *obj,
+					       int flags);
+
 static const struct drm_gem_object_funcs drm_gem_dma_default_funcs = {
 	.free = drm_gem_dma_object_free,
 	.print_info = drm_gem_dma_object_print_info,
@@ -80,6 +84,7 @@ static const struct drm_gem_object_funcs drm_gem_dma_default_funcs = {
 	.vmap = drm_gem_dma_object_vmap,
 	.mmap = canaan_drm_gem_dma_object_mmap,
 	.vm_ops = &drm_gem_dma_vm_ops,
+	.export = canaan_gem_prime_export,
 };
 
 static struct drm_gem_dma_object *
@@ -147,6 +152,72 @@ static struct drm_gem_dma_object *canaan_drm_gem_dma_create(struct drm_device *d
 error:
 	drm_gem_object_put(&dma_obj->base);
 	return ERR_PTR(ret);
+}
+
+static int canaan_gem_begin_cpu_access(struct dma_buf *dma_buf,
+				       enum dma_data_direction direction)
+{
+	struct drm_gem_object *obj = dma_buf->priv;
+	struct drm_gem_dma_object *dma_obj = to_drm_gem_dma_obj(obj);
+	struct drm_device *dev = obj->dev;
+
+	dma_sync_single_for_cpu(dev->dev,
+				dma_obj->dma_addr,
+				dma_obj->base.size,
+				direction);
+
+	return 0;
+}
+
+static int canaan_gem_end_cpu_access(struct dma_buf *dma_buf,
+				     enum dma_data_direction direction)
+{
+	struct drm_gem_object *obj = dma_buf->priv;
+	struct drm_gem_dma_object *dma_obj = to_drm_gem_dma_obj(obj);
+	struct drm_device *dev = obj->dev;
+
+	dma_sync_single_for_device(dev->dev,
+				   dma_obj->dma_addr,
+				   dma_obj->base.size,
+				   direction);
+
+	return 0;
+}
+
+static const struct dma_buf_ops canaan_dmabuf_ops = {
+	.cache_sgt_mapping = true,
+	.attach = drm_gem_map_attach,
+	.detach = drm_gem_map_detach,
+	.map_dma_buf = drm_gem_map_dma_buf,
+	.unmap_dma_buf = drm_gem_unmap_dma_buf,
+	.release = drm_gem_dmabuf_release,
+	.mmap = drm_gem_dmabuf_mmap,
+	.vmap = drm_gem_dmabuf_vmap,
+	.vunmap = drm_gem_dmabuf_vunmap,
+	.begin_cpu_access = canaan_gem_begin_cpu_access,
+	.end_cpu_access   = canaan_gem_end_cpu_access,
+};
+
+static struct dma_buf *canaan_gem_prime_export(struct drm_gem_object *obj,
+					       int flags)
+{
+	struct dma_buf *buf;
+	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
+
+	exp_info.ops = &canaan_dmabuf_ops;
+	exp_info.size = obj->size;
+	exp_info.flags = flags;
+	exp_info.priv = obj;
+	exp_info.resv = obj->resv;
+
+	buf = dma_buf_export(&exp_info);
+	if (IS_ERR(buf))
+		return buf;
+
+	drm_dev_get(obj->dev);
+	drm_gem_object_get(obj);
+
+	return buf;
 }
 
 static int canaan_drm_dumb_create(struct drm_file *file_priv,

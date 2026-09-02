@@ -97,6 +97,7 @@
 
 &vo {
 	vth_line = <10>;
+	background = <0x808000>; /* 黑色背景  YCbCr: Cr<<16|Cb<<8|Y) */
 };
 
 &mipi2 {
